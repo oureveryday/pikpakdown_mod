@@ -1015,6 +1015,8 @@ class Register_account_get(QThread):
             else:
                 info = signup_result.json()
 
+                new_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
                 print(f"Info ({new_time}):注册成功，正在获取会员码:{signup_result.json()}")
 
                 headers = {
@@ -1036,6 +1038,8 @@ class Register_account_get(QThread):
 
                 vip_result=requests.get( url=vip_url, headers=headers )
 
+                new_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
                 print(f"Info ({new_time}):获取成功，会员码已发送至{email}，正在获取5天邀请会员:{vip_result.text}")
 
                 userid = info['sub']
@@ -1050,6 +1054,9 @@ class Register_account_get(QThread):
 
 
                 invite_result = requests.get(url=invite_url, headers=new_headers )
+
+                new_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                
                 print(f"Info ({new_time}):获取5天邀请会员成功:{invite_result.text}")
 
                 self.valueChanged.emit(True)
