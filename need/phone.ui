@@ -158,7 +158,7 @@ padding-bottom:8px;
 </string>
         </property>
         <property name="text">
-         <string>注意：未注册会自动注册，通过此软件注册，你将获得官方活动给予的一定会员时间，开发者也因为你的注册获得一定会员时间(邀请机制)，如若介意，请自行安装官方安卓APP下载注册</string>
+         <string>注意：手机注册无法获得免费会员码！</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

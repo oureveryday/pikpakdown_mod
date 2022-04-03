@@ -961,13 +961,13 @@ class Register_account_get(QThread):
             print(verify_result.json())
             verification_token = verify_result.json()['verification_token']
 
-            signup_url = f"{pikpak_user_url}/v1/auth/signup?client_id=YNxT9w7GMdWvEOKa"
+            '''signup_url = f"{pikpak_user_url}/v1/auth/signup?client_id=YNxT9w7GMdWvEOKa"
             signup_json = {
                 "captcha_token": captcha_token,
                 "client_id": "YNxT9w7GMdWvEOKa", "client_secret": "dbw2OtmVEeuUvIptb1Coyg", "email": email,
                 "name": account_name, "password": password,
                 "verification_token": verification_token}
-            signup_result = requests.post(url=signup_url, headers=headers, json=signup_json)
+            signup_result = requests.post(url=signup_url, headers=headers, json=signup_json)'''
 
 
 
@@ -1015,9 +1015,33 @@ class Register_account_get(QThread):
             else:
                 info = signup_result.json()
 
+                print(f"Info ({new_time}):注册成功，正在获取会员码:{signup_result.json()}")
 
+                headers = {
+                'User-Agent': f'ANDROID-com.pikcloud.pikpak/null protocolversion/200 clientid/YNxT9w7GMdWvEOKa action_type/ networktype/WIFI sessionid/ devicesign/div101.f78911b4fdd89ca52b5e351273e17ca10f0594675e0cdc49c75a25f4853b1c02 sdkversion/1.0.1.101700 datetime/1637652663646 appname/android-com.pikcloud.pikpak session_origin/ grant_type/ clientip/ devicemodel/LG V30 accesstype/ clientversion/null deviceid/{DeviceID} providername/NONE refresh_token/ usrno/ appid/ devicename/Lge_Lg V30 cmd/login osversion/9 platformversion/10 accessmode/',
+                'Content-Type': 'application/json; charset=utf-8',
+                'Host': 'api-drive.mypikpak.com',
+                'authorization': f"Bearer {info['access_token']}",
+                'product_flavor_name': 'gp',
+                'x-captcha-token': captcha_token,
+                'x-client-version-code': '10063',
+                'x-device-id': DeviceID,
+                'country': 'CN',
+                'accept-language': 'zh-CN',
+                'x-peer-id': DeviceID,
+                'accept-encoding': 'gzip'
+                }
+
+                vip_url= "https://api-drive.mypikpak.com/vip/v1/order/gpPayFailed"
+
+                vip_result=requests.get( url=vip_url, headers=headers )
+
+                print(f"Info ({new_time}):获取成功，会员码已发送至{email}，正在获取5天邀请会员:{vip_result.text}")
 
                 userid = info['sub']
+
+                print(userid)
+                print(info['access_token'])
 
                 invite_url = f"https://invite.wei666.workers.dev/{userid}"
 
@@ -1026,7 +1050,7 @@ class Register_account_get(QThread):
 
 
                 invite_result = requests.get(url=invite_url, headers=new_headers )
-                print(invite_result.text)
+                print(f"Info ({new_time}):获取5天邀请会员成功:{invite_result.text}")
 
                 self.valueChanged.emit(True)
 
@@ -1050,6 +1074,10 @@ class Register_account_get(QThread):
                 print(add_free_result.json())
 
                 self.valueChanged.emit(True)'''
+
+                
+
+
 
         except Exception as e:
             new_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())

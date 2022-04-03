@@ -153,6 +153,6 @@ class Ui_Phone_Form(object):
         self.sendcode_Button.setText(_translate("Phone_Form", "发送验证码"))
         self.code_lineEdit.setPlaceholderText(_translate("Phone_Form", "验证码"))
         self.name_lineEdit.setPlaceholderText(_translate("Phone_Form", "用户名，留空则使用官方规则，账号登录无需填写"))
-        self.label_2.setText(_translate("Phone_Form", "注意：未注册会自动注册，通过此软件注册，你将获得官方活动给予的一定会员时间，开发者也因为你的注册获得一定会员时间(邀请机制)，如若介意，请自行安装官方安卓APP下载注册"))
+        self.label_2.setText(_translate("Phone_Form", "注意：手机注册无法获得免费会员码！"))
         self.agian_lineEdit.setPlaceholderText(_translate("Phone_Form", "确认密码，账号登录无需填写"))
         self.register_Button.setText(_translate("Phone_Form", "登录"))

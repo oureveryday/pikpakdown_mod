@@ -156,4 +156,4 @@ class Ui_Register_Form(object):
         self.closeButton.setText(_translate("Register_Form", "关闭窗口"))
         self.label.setText(_translate("Register_Form", "注册窗口"))
         self.agian_lineEdit.setPlaceholderText(_translate("Register_Form", "确认密码"))
-        self.label_2.setText(_translate("Register_Form", "注意：通过此软件注册，你将获得官方活动给予的一定会员时间，开发者也因为你的注册获得一定会员时间(邀请机制)，如若介意，请自行安装官方安卓APP下载注册"))
+        self.label_2.setText(_translate("Register_Form", "注意：注册时将自动获取会员码及5天邀请会员，会员码将会发送到注册邮箱（详情见输出台）"))
