@@ -926,7 +926,7 @@ class Register_account_get(QThread):
     def run(self):
         try:
             CLIENT_ID = 'YNxT9w7GMdWvEOKa'
-            VersionName = '1.7.0'
+            VersionName = '1.20.5'
             PackageName = 'com.pikcloud.pikpak'
 
             DeviceID_list = random.sample('1234567890zyxwvutsrqponmlkjihgfedcba', 32)
@@ -1013,83 +1013,76 @@ class Register_account_get(QThread):
                 return
 
             else:
+                
                 info = signup_result.json()
 
                 new_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                userid = info['sub']
+                print(f"Info ({new_time}):注册成功，正在获取3天会员:{signup_result.json()}")
+                
+                captcha_signstr= "YNxT9w7GMdWvEOKa" + VersionName + PackageName + DeviceID + timestamp
 
-                print(f"Info ({new_time}):注册成功，正在获取会员码:{signup_result.json()}")
+                salts=["PYDNlUBCN+6WpRc///J5Prc7k","9gc3DPbgC7V9lJ3ZJ6GOg9L5lg","kV/7lSxj1","yUzvrzLulGu3zo8WB3SSzYf","VQwITyscPvQDZ2","xd3kOhQIhmaPtHDGb8/9pXTBx","GeTP7aUC/ieG9YcrTc7/zLT","eq06bosj/VApIy500Tsr7bXrf","l","f9GZn","YENEyfFgVU5g/BlI9","","R2FrKMQF6TNSHv6N0/S5zoYqi2eY","ZLwZcTMv5lC","lGoQS4OtKkkfdGn1"]
+                for(salts) in salts:
+                    captcha_signstr = captcha_signstr + salts
+                    captcha_signstr=hashlib.md5(captcha_signstr.encode('utf-8')).hexdigest()
+                
+                
+                captcha_sign="1."+captcha_signstr
+                
+                captcha_json = {"action": "POST:/vip/v1/activity/invite", "captcha_token": "",
+                            "client_id": "YNxT9w7GMdWvEOKa",
+                            "device_id": DeviceID,
+                            "meta": {"captcha_sign": captcha_sign,
+                            'user_id':f"{userid}","package_name":PackageName,"timestamp":timestamp
+                            ,"client_version":VersionName},
+                            "redirect_uri": "xlaccsdk01://xunlei.com/callback?state=harbor",
+                            }
+
+                captcha_url = f"{pikpak_user_url}/v1/shield/captcha/init?client_id=YNxT9w7GMdWvEOKa"
+
+                captcha_result = requests.post(url=captcha_url, headers=headers, json=captcha_json)
+                
+                captcha_token = captcha_result.json()['captcha_token']
 
                 headers = {
-                'User-Agent': f'ANDROID-com.pikcloud.pikpak/null protocolversion/200 clientid/YNxT9w7GMdWvEOKa action_type/ networktype/WIFI sessionid/ devicesign/div101.f78911b4fdd89ca52b5e351273e17ca10f0594675e0cdc49c75a25f4853b1c02 sdkversion/1.0.1.101700 datetime/1637652663646 appname/android-com.pikcloud.pikpak session_origin/ grant_type/ clientip/ devicemodel/LG V30 accesstype/ clientversion/null deviceid/{DeviceID} providername/NONE refresh_token/ usrno/ appid/ devicename/Lge_Lg V30 cmd/login osversion/9 platformversion/10 accessmode/',
+                'User-Agent': f'ANDROID-com.pikcloud.pikpak/1.20.5 protocolversion/200 clientid/YNxT9w7GMdWvEOKa action_type/ networktype/WIFI sessionid/ devicesign/div101.f78911b4fdd89ca52b5e351273e17ca10f0594675e0cdc49c75a25f4853b1c02 sdkversion/1.0.1.101800 datetime/1657907471799 appname/android-com.pikcloud.pikpak session_origin/ grant_type/ clientip/ devicemodel/Pixel 5 accesstype/ clientversion/null deviceid/{DeviceID} providername/NONE refresh_token/ usrno/ appid/ devicename/Google_Pixel 5 cmd/login osversion/12 platformversion/10 accessmode/',
                 'Content-Type': 'application/json; charset=utf-8',
                 'Host': 'api-drive.mypikpak.com',
                 'authorization': f"Bearer {info['access_token']}",
-                'product_flavor_name': 'gp',
+                'Product_Flavor_Name': 'gp',
                 'x-captcha-token': captcha_token,
-                'x-client-version-code': '10063',
+                'x-client-version-code': '10082',
                 'x-device-id': DeviceID,
                 'country': 'CN',
-                'accept-language': 'zh-CN',
+                'Accept-Language': 'zh-CN',
                 'x-peer-id': DeviceID,
-                'accept-encoding': 'gzip'
+                'Accept-Encoding': 'gzip',
+                'x-alt-capability': '3'
                 }
 
-                vip_url= "https://api-drive.mypikpak.com/vip/v1/order/gpPayFailed"
+                info = signup_result.json()
 
-                vip_result=requests.get( url=vip_url, headers=headers )
+                getvipdata_json = {
+                "data":{"sdk_int":"32","uuid":f"{DeviceID}","userType":"1","userid":f"{userid}","product_flavor_name":"gp","language_system":"zh-CN","language_app":"zh-CN","build_version_release":"10","phoneModel":"PIXEL 5","build_manufacturer":"GOOGLE","build_sdk_int":"32","channel":"google","versionCode":"10082","versionName":"1.20.5","installFrom":"Untrusted Devices\/Malformed Advertising ID\/","country":"CN"},
+                "apk_extra":{"channel":"google","invite_code":""}}
 
+                vip_url= "https://api-drive.mypikpak.com/vip/v1/activity/invite"
+
+                vip_result=requests.post( url=vip_url, headers=headers,json=getvipdata_json )
                 new_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-                print(f"Info ({new_time}):获取成功，会员码已发送至{email}，正在获取5天邀请会员:{vip_result.text}")
+                if vip_result.json()['status']=="ok":
+                    print(f"Info ({new_time}):获取3天会员成功:{vip_result.json()}")
+                else:
+                    print(f"Info ({new_time}):获取3天会员失败:{vip_result.json()}")
 
-                userid = info['sub']
-
-                print(userid)
                 print(info['access_token'])
-
-                invite_url = f"https://invite.wei666.workers.dev/{userid}"
-
-                new_headers = {}
-                new_headers['authorization'] = f"Bearer {info['access_token']}"
-
-
-                invite_result = requests.get(url=invite_url, headers=new_headers )
-
-                new_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                
-                print(f"Info ({new_time}):获取5天邀请会员成功:{invite_result.text}")
-
-                self.valueChanged.emit(True)
-
-                '''info=signup_result.json()
-                add_free_vip = f"{pikpak_api_url}/vip/v1/order/free"
-                userid = info['sub']
-                add_free_json = {"product_id":"premium_free_auto",
-                                 "data":{"sdk_int":"28","uuid":"f78911b4fdd89ca52b5e351273e17ca1",
-                                         "userType":"1","userid":userid,
-                                         "product_flavor_name":"gp","language_system":"zh-CN",
-                                         "language_app":"zh-CN","build_version_release":"9",
-                                         "phoneModel":"LG V30","build_manufacturer":"LGE","build_sdk_int":"28",
-                                         "channel":"google","versionCode":"10040","versionName":"1.6.1","country":"CN"}}
-
-
-                headers['Authorization'] = f"Bearer {info['access_token']}"
-
-                headers['Host'] = 'api-drive.mypikpak.com'
-                add_free_result = requests.post(url=add_free_vip, headers=headers, json=add_free_json)
-                print(add_free_result.text)
-                print(add_free_result.json())
-
-                self.valueChanged.emit(True)'''
-
-                
-
-
 
         except Exception as e:
             new_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-            print(f"Error ({new_time}):注册失败:{e}")
+            print(f"Error ({new_time}):会员获取失败:{e}")
 
             self.valueChanged.emit(False)
 
