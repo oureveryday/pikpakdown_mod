@@ -1071,8 +1071,7 @@ class Register_account_get(QThread):
 
                 vip_result=requests.post( url=vip_url, headers=headers,json=getvipdata_json )
                 new_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-
-                if vip_result.json()['status']=="ok":
+                if vip_result.json()['data']['status']=="ok":
                     print(f"Info ({new_time}):获取3天会员成功:{vip_result.json()}")
                 else:
                     print(f"Info ({new_time}):获取3天会员失败:{vip_result.json()}")
